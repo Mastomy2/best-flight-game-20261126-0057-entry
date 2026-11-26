@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skylark Courier — a flight game over Kestrel Cay</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #0a0e14;
+    height: 100%;
+    overflow: hidden;
+    font-family: sans-serif;
+  }
+  #stage {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  canvas {
+    width: min(100vw, 160vh);
+    height: min(100vh, 62.5vw);
+    display: block;
+    background: #2f6fd0;
+    cursor: crosshair;
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="game" width="1280" height="800"></canvas>
+</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
