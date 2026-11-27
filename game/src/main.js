@@ -138,16 +138,20 @@ function prepareDemoShot() {
     flight.fuel = 68;
     mission.message = 'TOUCHDOWN RWY 09  +250 +120 smooth';
     mission.messageTime = 4;
-    // On final to Runway 27: 1.2 km out, 220 m up, gear down, 65 m/s.
-    flight.x = 330;
-    flight.y = 220;
-    flight.z = 300;
+    // On final to Runway 27: offset 150 m north of the centreline so the
+    // strip reads BESIDE the fuselage instead of hiding behind it (v2's
+    // approach shot showed no runway at all), ~420 m to the threshold, 130 m
+    // up, gear down, 60 m/s. Four seconds of autopilot leaves the plane
+    // ~200 m out on a visible intercept, the strip big in the lower frame.
+    flight.x = -450;
+    flight.y = 130;
+    flight.z = 150;
     flight.heading = Math.PI * 1.5; // west, toward runway 27
-    flight.speed = 65;
+    flight.speed = 60;
     flight.throttle = 0.5;
     flight.airborne = true;
     flight.gearDown = true;
-    for (let i = 0; i < 60 * 10; i++) {
+    for (let i = 0; i < 60 * 4; i++) {
       stepSimulation(dt, autopilotCommand(flight, mission, dt), 0.5);
     }
     return;
@@ -155,6 +159,7 @@ function prepareDemoShot() {
   if (shotMode === 'cockpit') {
     startMission(0);
     view = 'cockpit';
+    flight.gearDown = false; // cruise: gear up (v2 showed GEAR DOWN in flight)
     stageBeforeRing(2, 280, 82);
     stageProgress(2, 200, 88, 'RING 2/8  +100');
     for (let i = 0; i < 60 * 2; i++) {
@@ -163,9 +168,25 @@ function prepareDemoShot() {
     return;
   }
   if (shotMode === 'rings') {
-    startMission(0);
-    stageBeforeRing(4, 170, 82);
-    stageProgress(4, 400, 76, 'RING 4/8  +100');
+    // Storm Chase, not a second Ring Run: the v2 contact sheet wasted a cell
+    // on a near-duplicate of the cover (same framing, plane in a ring).
+    // Storm Chase shows a different mission (clock in the objective, +150 per
+    // ring), a different ring on the north side of the island, and a
+    // north-east heading — a genuinely different scene from the cover.
+    startMission(2);
+    flight.gearDown = false; // cruise: gear up (v2 showed GEAR DOWN in flight)
+    mission.stormRing = RINGS[6];
+    // 500 m out, not 170: at 170 m the ring fills the frame and the shot is
+    // the cover all over again (plane centred in a gold hoop). From 500 m
+    // the ring is a small gold target ahead over the island, the terrain and
+    // the sea carry the frame — a different picture, not a duplicate.
+    stageBeforeRing(6, 500, 82);
+    mission.ringsPassed = 3;
+    mission.score = 450;
+    mission.stormClock = 64;
+    flight.fuel = 71;
+    mission.message = 'STORM RING  +150  +10s';
+    mission.messageTime = 4;
     for (let i = 0; i < 60 * 1; i++) {
       stepSimulation(dt, autopilotCommand(flight, mission, dt), 0.66);
     }
@@ -173,6 +194,7 @@ function prepareDemoShot() {
   }
   // cover: Ring Run, staged just before the fourth ring with the island below.
   startMission(0);
+  flight.gearDown = false; // cruise: gear up (v2 showed GEAR DOWN in flight)
   stageBeforeRing(3, 300, 82);
   stageProgress(3, 300, 82, 'RING 3/8  +100');
   for (let i = 0; i < 60 * 2; i++) {
